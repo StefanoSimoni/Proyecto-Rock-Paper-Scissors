@@ -1,3 +1,6 @@
+const gameButtons = document.querySelectorAll('button')
+const results = document.getElementById("results")
+
 let getComputerChoice = () => {
     let random = Math.floor(Math.random() * (3 - 1 + 1) + 1)
     let choice
@@ -10,6 +13,19 @@ let getComputerChoice = () => {
     }
     return choice
 }
+
+gameButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+        const computerSelection = getComputerChoice()
+        if(button.textContent.toLowerCase() === "piedra") {
+            game(results.textContent = (playRound("piedra", computerSelection)))
+        } else if(button.textContent.toLowerCase() === "papel") {
+            game(results.textContent = (playRound("papel", computerSelection)))
+        } else if(button.textContent.toLowerCase() === "tijeras") {
+            game(results.textContent = (playRound("tijeras", computerSelection)))
+        }
+    })
+})
 
 let playRound = (playerSelection, computerSelection) => {
     let result
@@ -27,29 +43,30 @@ let playRound = (playerSelection, computerSelection) => {
     return result
 }
 
-let game = () => {
-    let asd = [5]
-    let countPlayer = 0
-    let countComputer = 0
-    let text
-    for(let i = 0; i < 5; i++) {
-        const playerSelection = prompt("¿Piedra, papel o tijeras?", "Ingrese piedra, papel o tijeras").toLowerCase()
-        const computerSelection = getComputerChoice()
-        asd[i] = playRound(playerSelection, computerSelection) + "\n"
-        if(asd[i].includes("Ganaste")) {
-            countPlayer += 1
-        } else if(asd[i].includes("Perdiste")) {
-            countComputer += 1
-        }
-    }
-    if(countPlayer > countComputer) {
-        text = "Ganaste " + countPlayer + " a " + countComputer
-    } else if(countComputer > countPlayer) {
-        text = "Perdiste " + countComputer + " a " + countPlayer
-    } else {
-        text = "Empataste " + countPlayer + " a " + countComputer
-    }
-    return asd.join("") + "\n" + text
-}
+let countPlayer = 0
+let countComputer = 0
 
-console.log(game())
+let game = (results) => {
+    let text
+    if(results.includes("Ganaste")) {
+        countPlayer += 1
+    } else if(results.includes("Perdiste")) {
+        countComputer += 1
+    }
+    if(countPlayer + countComputer == 5) {
+        gameButtons.forEach((button) => {
+            button.disabled = true
+        })
+        const score = document.createElement("div")
+        score.setAttribute("id", "score")
+        if(countPlayer > countComputer) {
+            text = "Ganaste " + countPlayer + " a " + countComputer
+        } else if(countComputer > countPlayer) {
+            text = "Perdiste " + countComputer + " a " + countPlayer
+        } else {
+            text = "Empataste " + countPlayer + " a " + countComputer
+        }
+        score.innerHTML = text
+        document.body.appendChild(score)
+    }
+}
